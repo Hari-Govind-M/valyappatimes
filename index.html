@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Valyappa's Sip and Cheers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Basic styling for mobile responsiveness and clear UI */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #004d40;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 24px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-size: 20px;
+    }
+    .button-group {
+      margin: 10px 0;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 18px;
+      background-color: #009688;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #00796b;
+    }
+    .hidden {
+      display: none;
+    }
+    /* Ensure focus outline is visible */
+    .btn:focus {
+      outline: 2px solid #ffeb3b;
+    }
+  </style>
+</head>
+<body>
+
+<header>Valyappa's Sip and Cheers</header>
+
+<div class="container">
+  <!-- Step 1: Alcohol Type Selection -->
+  <div id="type-selection">
+    <h2>Select Alcohol Type</h2>
+    <div class="button-group">
+      <button class="btn" onclick="selectType('Whiskey')">Whiskey</button>
+      <button class="btn" onclick="selectType('Vodka')">Vodka</button>
+      <button class="btn" onclick="selectType('Rum')">Rum</button>
+      <button class="btn" onclick="selectType('Beer')">Beer</button>
+      <button class="btn" onclick="selectType('Wine')">Wine</button>
+      <button class="btn" onclick="selectType('Brandy')">Brandy</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Brand Selection -->
+  <div id="brand-selection" class="hidden">
+    <h2 id="brand-header">Select Brand for</h2>
+    <div class="button-group" id="brand-buttons">
+      <!-- Dummy brand buttons will be inserted here -->
+    </div>
+    <button class="btn" onclick="goBack('type')">Back</button>
+  </div>
+
+  <!-- Step 3: Size Selection -->
+  <div id="size-selection" class="hidden">
+    <h2 id="size-header">Select Size for</h2>
+    <div class="button-group">
+      <button class="btn" onclick="placeOrder('750 ml', 1500)">750 ml - ₹1500</button>
+      <button class="btn" onclick="placeOrder('500 ml', 1000)">500 ml - ₹1000</button>
+      <button class="btn" onclick="placeOrder('180 ml', 700)">180 ml - ₹700</button>
+    </div>
+    <button class="btn" onclick="goBack('brand')">Back</button>
+  </div>
+
+  <!-- Order Confirmation -->
+  <div id="order-confirmation" class="hidden">
+    <h2>Order Confirmation</h2>
+    <p id="order-details"></p>
+    <button class="btn" onclick="resetOrder()">Place New Order</button>
+  </div>
+</div>
+
+<script>
+  // Dummy brand data for each alcohol type
+  const brandData = {
+    'Whiskey': ['Old Tavern', 'Royal Scotch', "Jack's Premium"],
+    'Vodka': ['Clear Spirit', 'Silver Vodka', 'Royal Vodka'],
+    'Rum': ['Pirate\'s Rum', 'Golden Rum', 'Spiced Rum'],
+    'Beer': ['King Lager', 'Brew Masters', 'Cool Beer'],
+    'Wine': ['Red Vine', 'Chateau Blanc', 'Golden Reserve'],
+    'Brandy': ['Vintage Brandy', 'Classic Brandy', 'Smooth Brandy']
+  };
+
+  let selectedType = '';
+  let selectedBrand = '';
+
+  // Function to handle alcohol type selection
+  function selectType(type) {
+    selectedType = type;
+    document.getElementById('type-selection').classList.add('hidden');
+    document.getElementById('brand-selection').classList.remove('hidden');
+    document.getElementById('brand-header').innerText = 'Select Brand for ' + type;
+    const brandButtonsDiv = document.getElementById('brand-buttons');
+    brandButtonsDiv.innerHTML = '';
+    brandData[type].forEach(brand => {
+      const btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.innerText = brand;
+      btn.onclick = function() { selectBrand(brand); };
+      brandButtonsDiv.appendChild(btn);
+    });
+  }
+
+  // Function to handle brand selection
+  function selectBrand(brand) {
+    selectedBrand = brand;
+    document.getElementById('brand-selection').classList.add('hidden');
+    document.getElementById('size-selection').classList.remove('hidden');
+    document.getElementById('size-header').innerText = 'Select Size for ' + selectedType + ' - ' + brand;
+  }
+
+  // Function to place order with the selected size and price
+  function placeOrder(size, price) {
+    document.getElementById('size-selection').classList.add('hidden');
+    document.getElementById('order-confirmation').classList.remove('hidden');
+    document.getElementById('order-details').innerText = 'You have ordered ' + selectedType + ' (' + selectedBrand + ') - ' + size + ' at ₹' + price + '.';
+    alert('Order placed successfully!');
+  }
+
+  // Function to navigate back to previous steps
+  function goBack(step) {
+    if (step === 'type') {
+      document.getElementById('brand-selection').classList.add('hidden');
+      document.getElementById('type-selection').classList.remove('hidden');
+    } else if (step === 'brand') {
+      document.getElementById('size-selection').classList.add('hidden');
+      document.getElementById('brand-selection').classList.remove('hidden');
+    }
+  }
+
+  // Function to reset the order process for a new order
+  function resetOrder() {
+    selectedType = '';
+    selectedBrand = '';
+    document.getElementById('order-confirmation').classList.add('hidden');
+    document.getElementById('type-selection').classList.remove('hidden');
+  }
+</script>
+
+</body>
+</html>
