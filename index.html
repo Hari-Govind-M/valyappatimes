@@ -5,15 +5,15 @@
   <title>Valyappa's Sip and Cheers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* Basic styling for mobile responsiveness and clear UI */
+    /* Background gradient for the whole page */
     body {
       font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
       margin: 0;
       padding: 0;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
     }
     header {
-      background-color: #004d40;
+      background: linear-gradient(90deg, #004d40, #00796b);
       color: white;
       padding: 15px;
       text-align: center;
@@ -29,6 +29,7 @@
     }
     h2 {
       font-size: 20px;
+      margin-bottom: 15px;
     }
     .button-group {
       margin: 10px 0;
@@ -39,19 +40,18 @@
       padding: 15px;
       margin: 10px 0;
       font-size: 18px;
-      background-color: #009688;
+      background: linear-gradient(45deg, #009688, #80cbc4);
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
     }
     .btn:hover {
-      background-color: #00796b;
+      background: linear-gradient(45deg, #00796b, #4db6ac);
     }
     .hidden {
       display: none;
     }
-    /* Ensure focus outline is visible */
     .btn:focus {
       outline: 2px solid #ffeb3b;
     }
@@ -79,7 +79,7 @@
   <div id="brand-selection" class="hidden">
     <h2 id="brand-header">Select Brand for</h2>
     <div class="button-group" id="brand-buttons">
-      <!-- Dummy brand buttons will be inserted here -->
+      <!-- Brand buttons will be generated here -->
     </div>
     <button class="btn" onclick="goBack('type')">Back</button>
   </div>
@@ -87,10 +87,8 @@
   <!-- Step 3: Size Selection -->
   <div id="size-selection" class="hidden">
     <h2 id="size-header">Select Size for</h2>
-    <div class="button-group">
-      <button class="btn" onclick="placeOrder('750 ml', 1500)">750 ml - ₹1500</button>
-      <button class="btn" onclick="placeOrder('500 ml', 1000)">500 ml - ₹1000</button>
-      <button class="btn" onclick="placeOrder('180 ml', 700)">180 ml - ₹700</button>
+    <div class="button-group" id="size-buttons">
+      <!-- Size buttons will be generated here -->
     </div>
     <button class="btn" onclick="goBack('brand')">Back</button>
   </div>
@@ -104,14 +102,24 @@
 </div>
 
 <script>
-  // Dummy brand data for each alcohol type
+  // Alcohol brands available in Kerala
   const brandData = {
-    'Whiskey': ['Old Tavern', 'Royal Scotch', "Jack's Premium"],
-    'Vodka': ['Clear Spirit', 'Silver Vodka', 'Royal Vodka'],
-    'Rum': ['Pirate\'s Rum', 'Golden Rum', 'Spiced Rum'],
-    'Beer': ['King Lager', 'Brew Masters', 'Cool Beer'],
-    'Wine': ['Red Vine', 'Chateau Blanc', 'Golden Reserve'],
-    'Brandy': ['Vintage Brandy', 'Classic Brandy', 'Smooth Brandy']
+    'Whiskey': ['Royal Stag', "McDowell's No.1", 'Imperial Blue'],
+    'Vodka': ['Magic Moments', 'Romanov', 'Smirnoff'],
+    'Rum': ['Old Monk', 'Bacardi', 'Captain Morgan'],
+    'Beer': ['Kingfisher', 'Tuborg', 'Carlsberg'],
+    'Wine': ['Sula', 'Grover Zampa', 'Fratelli'],
+    'Brandy': ['Mansion House', "McDowell's No.1 Brandy", 'Honey Bee']
+  };
+
+  // Size and pricing data in INR for each alcohol type
+  const sizePrices = {
+    'Whiskey': { '750 ml': 2000, '500 ml': 1500, '180 ml': 800 },
+    'Vodka': { '750 ml': 1800, '500 ml': 1400, '180 ml': 700 },
+    'Rum': { '750 ml': 1500, '500 ml': 1100, '180 ml': 600 },
+    'Beer': { '750 ml': 1200, '500 ml': 900, '180 ml': 500 },
+    'Wine': { '750 ml': 2500, '500 ml': 2000, '180 ml': 1200 },
+    'Brandy': { '750 ml': 2200, '500 ml': 1700, '180 ml': 900 }
   };
 
   let selectedType = '';
@@ -140,14 +148,26 @@
     document.getElementById('brand-selection').classList.add('hidden');
     document.getElementById('size-selection').classList.remove('hidden');
     document.getElementById('size-header').innerText = 'Select Size for ' + selectedType + ' - ' + brand;
+    const sizeButtonsDiv = document.getElementById('size-buttons');
+    sizeButtonsDiv.innerHTML = '';
+    let prices = sizePrices[selectedType];
+    for (const size in prices) {
+      const price = prices[size];
+      const btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.innerText = size + ' - ₹' + price;
+      btn.onclick = function() { placeOrder(size, price); };
+      sizeButtonsDiv.appendChild(btn);
+    }
   }
 
-  // Function to place order with the selected size and price
+  // Function to place order with the selected size and price (no popup)
   function placeOrder(size, price) {
     document.getElementById('size-selection').classList.add('hidden');
     document.getElementById('order-confirmation').classList.remove('hidden');
-    document.getElementById('order-details').innerText = 'You have ordered ' + selectedType + ' (' + selectedBrand + ') - ' + size + ' at ₹' + price + '.';
-    alert('Order placed successfully!');
+    document.getElementById('order-details').innerHTML = 
+      'You have ordered ' + selectedType + ' (' + selectedBrand + ') - ' + size + ' at ₹' + price + '.<br>' +
+      'You will be contacted by Govi when the purchase is made.';
   }
 
   // Function to navigate back to previous steps
